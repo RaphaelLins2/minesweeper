@@ -114,7 +114,7 @@ print('Lista de bombas pronta!')
 campo =[cell(False,X,Y) for i in range(campo_area)] 
 
 
-print(campo)
+#print(campo)
 
 #gameplay
 
@@ -127,7 +127,9 @@ print(f'o tamanho do campo em Y é: {valor_max_Y_campo}')
 
 x=int(input('diga uma coordenada x para revelar!'))
 y=int(input('diga uma coordenada y para revelar!'))
-
+id_bomba =  x + (campo_tamanho_X*(y-1))
+print(campo[id_bomba])
+campo[id_bomba].revelar(campo, coordenadas_bombas)
 
 while True:
     x=int(input('diga uma coordenada x para revelar!'))
