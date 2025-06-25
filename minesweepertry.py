@@ -10,8 +10,15 @@ class cell:
     
     #descobrir se a própria celula é uma bomba ou não
     def descobrir_se_bomba(self, coords_bombas):
-        if [self.cordX, self.cordY] in coords_bombas: #compara a própria coordenada na lista de bombas para descobrir se é uma bomba
+        if self.bomba == True:
+            print('já era uma bomba')
+        else:
+            print('não era uma bomba antes')
+        
+        coords = [self.cordX, self.cordY]
+        if coords in coords_bombas: #compara a própria coordenada na lista de bombas para descobrir se é uma bomba
             self.bomba = True
+            print(f'a celula {self} nas coordenadas {[self.cordX], [self.cordY]}era uma bomba')
 
     def dizer_se_bomba(self):
         #simplesmente retorna verdadeiro ou 
@@ -29,6 +36,7 @@ class cell:
             bombas_ao_redor = 0
             #olhando numa area de raio igual a 1 na celula
             for cx in [-1, 0, 1]:
+                print('checando vizinhos')
                 for cy in [-1, 0, 1]:
                     if cx == 0 and cy == 0:
                         continue #pular a própria coordenada mesmo que não necessário
@@ -110,25 +118,35 @@ print('Lista de bombas pronta!')
 # o código em um só 
 
 #criando campo
-
-campo =[cell(False,X,Y) for i in range(campo_area)] 
-
-
+xcamp=0
+ycamp=0
+campo=[]
+for ycamp in range(campo_tamanho_Y):
+    for xcamp in range(campo_tamanho_X):
+        campo.append(cell(False,xcamp,ycamp))
 #print(campo)
 
 #gameplay
 
 print('jogando campo minado broxa!')
 
+'''
 valor_max_Y_campo = len(campo)/campo_tamanho_X
 print(f'o tamanho do campo em Y é: {valor_max_Y_campo}')
+'''
 
 
 
 x=int(input('diga uma coordenada x para revelar!'))
 y=int(input('diga uma coordenada y para revelar!'))
-id_bomba =  x + (campo_tamanho_X*(y-1))
-print(campo[id_bomba])
+
+if y == 0:
+    id_bomba =  x + (campo_tamanho_X*(y))
+    print(id_bomba)
+else:
+    id_bomba =  x + (campo_tamanho_X*(y-1))
+    print(id_bomba)
+
 campo[id_bomba].revelar(campo, coordenadas_bombas)
 
 while True:
