@@ -17,6 +17,14 @@ COR_FUNDO = (20, 20, 20)
 COR_GRADE = (50, 50, 50)
 COR_REVELADO = (80, 80, 80)
 COR_TEXTO = (200, 200, 200)
+COR_T1=(70,130,180)
+COR_T2=(0,100,0)
+COR_T3=(200,0,0)
+COR_T4=(0,0,100)
+COR_T5=(100,0,0)
+COR_T6=(0,50,100)
+COR_T7=(80,0,180)
+COR_T8=(80,80,80)
 COR_BOMBA = (200, 50, 50)
 
 pygame.init()
@@ -39,7 +47,25 @@ def desenhar_campo():
             else:
                 n = celula.perguntar_se_bomb(campo_tamanho_X, campo, campo_tamanho_Y)
                 if n > 0:
-                    texto = fonte.render(str(n), True, COR_TEXTO)
+                    match(n):
+                        case(1):
+                            texto = fonte.render(str(n), True, COR_T1)
+                        case(2):
+                            texto = fonte.render(str(n), True, COR_T2)
+                        case(3):
+                            texto = fonte.render(str(n), True, COR_T3)
+                        case(4):
+                            texto = fonte.render(str(n), True, COR_T4)
+                        case(5):
+                            texto = fonte.render(str(n), True, COR_T5)
+                        case(6):
+                            texto = fonte.render(str(n), True, COR_T6)
+                        case(7):
+                            texto = fonte.render(str(n), True, COR_T7)
+                        case(8):
+                            texto = fonte.render(str(n), True, COR_T8)
+                        
+                    
                     tela.blit(texto, (x + TAM_CELULA // 4, y + TAM_CELULA // 4))
         else:
             pygame.draw.rect(tela, COR_FUNDO, ret)
