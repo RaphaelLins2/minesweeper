@@ -60,6 +60,21 @@ class cell:
             self.revelada = True
             
             return False
+    
+    def revelar_adjacente(self, campo, Tamanho_X_max, tamanho_y_max, lista_bombas):
+        for px in [-1, 0, 1]:
+            for py in [-1, 0, 1]:
+                if px == 0 and py == 0:
+                    continue
+
+                mx = self.cordX + px
+                my = self.cordY + py
+
+                if 0 <= mx < Tamanho_X_max and 0 <= my < tamanho_y_max:
+                    id_vizinho = mx + my * Tamanho_X_max
+                    campo[id_vizinho].revelar(campo, lista_bombas, Tamanho_X_max, tamanho_y_max)
+
+
 
 
 class campor:
@@ -82,15 +97,15 @@ qnt_bombas = int(input(f'quantas bombas você quer no campo? (qnt máx: {qnt_bom
 
 coordenadas_bombas = [] # iniciando uma lista para ter as coordenadas de bombas
 for i in range(qnt_bombas):
-    X = rng.randint(1,campo_tamanho_X)
-    Y = rng.randint(1,campo_tamanho_Y)
+    X = rng.randint(1,campo_tamanho_X-1)
+    Y = rng.randint(1,campo_tamanho_Y-1)
     
 
     if ([X, Y]) in coordenadas_bombas:
         print(f"coordenada duplicada {X} {Y}!\nprocurando outra")
         while ([X, Y]) in coordenadas_bombas:
-            X = rng.randint(0,campo_tamanho_X)
-            Y = rng.randint(0,campo_tamanho_Y)
+            X = rng.randint(1,campo_tamanho_X-1)
+            Y = rng.randint(1,campo_tamanho_Y-1)
             print(f'testando as coordenadas {X} {Y}')
 
     print(f'criada uma bomba nas coordenadas {X} {Y}')

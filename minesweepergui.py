@@ -64,9 +64,10 @@ def desenhar_campo():
                             texto = fonte.render(str(n), True, COR_T7)
                         case(8):
                             texto = fonte.render(str(n), True, COR_T8)
-                        
-                    
+                
                     tela.blit(texto, (x + TAM_CELULA // 4, y + TAM_CELULA // 4))
+                if n == 0 :
+                    celula.revelar_adjacente(campo, campo_tamanho_X, campo_tamanho_Y, coordenadas_bombas)
         else:
             pygame.draw.rect(tela, COR_FUNDO, ret)
 
