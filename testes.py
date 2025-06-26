@@ -1,2 +1,2 @@
-for i in range(3):
-    print('ola')
+for i in range(9):
+    print(f'ola {i}')

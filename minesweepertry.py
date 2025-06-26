@@ -2,11 +2,12 @@ import random as rng
 
 class cell:
     #iniciando as variaveis para cada celula
-    def __init__(self, bomba, cordX, cordY):
+    def __init__(self, bomba, cordX, cordY, cordsbombs):
         self.bomba = bomba
         self.cordX = cordX
         self.cordY = cordY
         self.revelada = False
+        self.descobrir_se_bomba(cordsbombs)
     
     #descobrir se a própria celula é uma bomba ou não
     def descobrir_se_bomba(self, coords_bombas):
@@ -25,94 +26,39 @@ class cell:
         #falso com base se é ou não uma bomba
         return self.bomba
 
-    def perguntar_se_bomb(self,Tamanho_X_max, campo):
-        #checa num raio quadrado de 1 se os vizinhos tem ou não uma bomba
-        if self.bomba == True:
-            #caso seja uma bomba, não precisa checar bombas ao redor
+    def perguntar_se_bomb(self, Tamanho_X_max, campo, tamanho_y_max):
+        if self.bomba:
             print('Eu sou uma bomba! :D')
-            pass
-        else:
-            #iniciando variavel de bombas na redondeza
-            bombas_ao_redor = 0
-            #olhando numa area de raio igual a 1 na celula
-            #considerando que ela está em uma lista linear
-            # precisamos apenas subtrair por 1 para ter as
-            # coordenadas adjacentes subtrair pelo tamanho
-            # total do raio X apenas uma vez para descobrir
-            # o vizinho superior, repetir a função anteiror.
-            # Agora só soma o tamanho total do X para desc-
-            # obrir o vizinho de baixo 
+            return 0
 
-            id_no_campo = campo.index(self)
-            #checando lados
-            if 0<= (id_no_campo-1):
-                if(campo[id_no_campo-1]).dizer_se_bomba() == True:
-                    bombas_ao_redor += 1
-                    print('Bomba Perto!')
-            if 0<= (id_no_campo+1):
-                if (campo[id_no_campo+1]).dizer_se_bomba() == True:
-                    bombas_ao_redor +=1
-                    print('Bomba Perto!')
-            #checando em baixo
-            if 0<= (id_no_campo+Tamanho_X_max+1):
-                if (campo[id_no_campo+Tamanho_X_max+1]).dizer_se_bomba() == True:
-                    bombas_ao_redor+=1
-                    print('Bomba Perto!')
-            if 0<= (id_no_campo+Tamanho_X_max):
-                if (campo[id_no_campo+Tamanho_X_max]).dizer_se_bomba() == True:
-                    bombas_ao_redor+=1
-                    print('Bomba Perto!')
-            if 0<= (id_no_campo+Tamanho_X_max-1):
-                if (campo[id_no_campo+Tamanho_X_max-1]).dizer_se_bomba() == True:
-                    bombas_ao_redor+=1
-                    print('Bomba Perto!')
-            
-            #checando no topo
-            if 0<= (id_no_campo-Tamanho_X_max-1): 
-                if (campo[id_no_campo-Tamanho_X_max-1]).dizer_se_bomba() == True:
-                    bombas_ao_redor+=1
-                    print('Bomba Perto!')
-            if 0<= (id_no_campo-Tamanho_X_max): 
-                if (campo[id_no_campo-Tamanho_X_max]).dizer_se_bomba() == True:
-                    bombas_ao_redor+=1
-                    print('Bomba Perto!')
-            if 0<= (id_no_campo-Tamanho_X_max-1): 
-                if (campo[id_no_campo-Tamanho_X_max-1]).dizer_se_bomba() == True:
-                    bombas_ao_redor+=1
-                    print('Bomba Perto!')
-    
+        bombas_ao_redor = 0
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                if dx == 0 and dy == 0:
+                    continue
 
+                nx = self.cordX + dx
+                ny = self.cordY + dy
 
-            '''
-            for cx in [-1, 0, 1]:
-                print('checando vizinhos')
-                for cy in [-1, 0, 1]:
-                    if cx == 0 and cy == 0:
-                        continue #pular a própria coordenada mesmo que não necessário
-                    vizinho_x = self.cordX + cx
-                    vizinho_y = self.cordY + cy
+                # Verifica se vizinho está dentro dos limites do campo
+                if 0 <= nx < Tamanho_X_max and 0 <= ny < tamanho_y_max:
+                    id_vizinho = nx + ny * Tamanho_X_max
+                    if campo[id_vizinho].dizer_se_bomba():
+                        bombas_ao_redor += 1
+                        print(f'Bomba Perto nas coordenadas {nx} {ny}!')
 
-                    #checando primeiramente para ver se o vizinho está dentro dos limites
-                    if 0 <= vizinho_x < len(campo[0]) and 0 <= vizinho_y < len(campo):
-                        #dando a localização do vizinho
-                        vizinho = campo[vizinho_y][vizinho_x]
-                        if vizinho.dizer_se_bomba():
-                            #pegando a informação de bomba do vizinho caso ele tenha
-                            bombas_ao_redor +=1'''
+        return bombas_ao_redor
 
-        #definindo a variavel de bombas ao redor dentro da variavel
-        #para poder usar em outras areas do código
-
-            return bombas_ao_redor
-
-    def revelar(self, campo, lista_bombas, Tamanho_X_max):
+    def revelar(self, campo, lista_bombas, Tamanho_X_max, tamanho_y_max):
         self.descobrir_se_bomba(lista_bombas)
+        print(f'checando ao redor de minhas coordenadas {self.cordX} {self.cordY}')
         if self.bomba == True:
             print("eu era uma bomba! você perdeu kkk")
             return True
         else:
-            print(f'bombas perto {self.perguntar_se_bomb(Tamanho_X_max, campo)}')
+            print(f'bombas perto {self.perguntar_se_bomb(Tamanho_X_max, campo, tamanho_y_max)}')
             self.revelada = True
+            
             return False
 
 
@@ -136,8 +82,8 @@ qnt_bombas = int(input(f'quantas bombas você quer no campo? (qnt máx: {qnt_bom
 
 coordenadas_bombas = [] # iniciando uma lista para ter as coordenadas de bombas
 for i in range(qnt_bombas):
-    X = rng.randint(0,campo_tamanho_X)
-    Y = rng.randint(0,campo_tamanho_Y)
+    X = rng.randint(1,campo_tamanho_X)
+    Y = rng.randint(1,campo_tamanho_Y)
     
 
     if ([X, Y]) in coordenadas_bombas:
@@ -154,8 +100,8 @@ for i in range(qnt_bombas):
     coordenadas_bombas.append([X, Y])
     print('bomba adicionada na lista!')
     print(coordenadas_bombas)
-print('Lista de bombas pronta!')
-
+print(f'Lista de bombas pronta! com tamanho de: {len(coordenadas_bombas)}')
+'''
 # ideia de código para gerar campo: fazer uma lista grande msm
 # já que o código se guia pelas coordenadas de cada célula
 # apenas teriamos que colocar um somador automático indo primeiro
@@ -165,6 +111,7 @@ print('Lista de bombas pronta!')
 # as bombas, perguntaremos ao código de geração de bomba se na 
 # nossa coordenada é uma bomba ou não, também poderiamos integrar 
 # o código em um só 
+'''
 
 #criando campo
 xcamp=0
@@ -174,30 +121,21 @@ campo=[]
 
 for ycamp in range(campo_tamanho_Y):
     for xcamp in range(campo_tamanho_X):
-        campo.append(cell(False,xcamp,ycamp))
+        campo.append(cell(False,xcamp,ycamp,coordenadas_bombas))
 #print(campo)
 
 #gameplay
+if __name__ == "__main__":
+    print('jogando campo minado broxa!')
 
-print('jogando campo minado broxa!')
+    while True:
+        x=int(input('diga uma coordenada x para revelar!'))
+        y=int(input('diga uma coordenada y para revelar!'))
 
-'''
-valor_max_Y_campo = len(campo)/campo_tamanho_X
-print(f'o tamanho do campo em Y é: {valor_max_Y_campo}')
-'''
+        if y == 0:
+            id_bomba =  x + (campo_tamanho_X*(y))
+        else:
+            id_bomba =  x + (campo_tamanho_X*(y))
 
-while True:
-
-    x=int(input('diga uma coordenada x para revelar!'))
-    y=int(input('diga uma coordenada y para revelar!'))
-
-    if y == 0:
-        id_bomba =  x + (campo_tamanho_X*(y))
-        print(id_bomba)
-    else:
-        id_bomba =  x + (campo_tamanho_X*(y))
-        print(id_bomba)
-
-    campo[id_bomba].revelar(campo, coordenadas_bombas, campo_tamanho_X)
-
+        campo[id_bomba].revelar(campo, coordenadas_bombas, campo_tamanho_X, campo_tamanho_Y)
 
