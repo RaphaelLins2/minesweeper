@@ -7,7 +7,7 @@ jogo_vencido = False
 
 
 # Configurações
-TAM_CELULA = 40
+TAM_CELULA = 10
 LARGURA = campo_tamanho_X * TAM_CELULA
 ALTURA = campo_tamanho_Y * TAM_CELULA
 FPS = 60
@@ -16,6 +16,7 @@ FPS = 60
 COR_FUNDO = (20, 20, 20)
 COR_GRADE = (50, 50, 50)
 COR_REVELADO = (80, 80, 80)
+COR_BANDEIRA = (0,250,0)
 COR_TEXTO = (200, 200, 200)
 COR_T1=(70,130,180)
 COR_T2=(0,100,0)
@@ -40,34 +41,35 @@ def desenhar_campo():
         y = celula.cordY * TAM_CELULA
         ret = pygame.Rect(x, y, TAM_CELULA, TAM_CELULA)
 
-        if celula.revelada:
+        if celula.revelada :
             pygame.draw.rect(tela, COR_REVELADO, ret)
             if celula.bomba:
                 pygame.draw.circle(tela, COR_BOMBA, ret.center, TAM_CELULA // 4)
             else:
-                n = celula.perguntar_se_bomb(campo_tamanho_X, campo, campo_tamanho_Y)
-                if n > 0:
-                    match(n):
+                if celula.num_bombas > 0:
+                    match(celula.num_bombas):
                         case(1):
-                            texto = fonte.render(str(n), True, COR_T1)
+                            texto = fonte.render(str(celula.num_bombas), True, COR_T1)
                         case(2):
-                            texto = fonte.render(str(n), True, COR_T2)
+                            texto = fonte.render(str(celula.num_bombas), True, COR_T2)
                         case(3):
-                            texto = fonte.render(str(n), True, COR_T3)
+                            texto = fonte.render(str(celula.num_bombas), True, COR_T3)
                         case(4):
-                            texto = fonte.render(str(n), True, COR_T4)
+                            texto = fonte.render(str(celula.num_bombas), True, COR_T4)
                         case(5):
-                            texto = fonte.render(str(n), True, COR_T5)
+                            texto = fonte.render(str(celula.num_bombas), True, COR_T5)
                         case(6):
-                            texto = fonte.render(str(n), True, COR_T6)
+                            texto = fonte.render(str(celula.num_bombas), True, COR_T6)
                         case(7):
-                            texto = fonte.render(str(n), True, COR_T7)
+                            texto = fonte.render(str(celula.num_bombas), True, COR_T7)
                         case(8):
-                            texto = fonte.render(str(n), True, COR_T8)
+                            texto = fonte.render(str(celula.num_bombas), True, COR_T8)
                 
                     tela.blit(texto, (x + TAM_CELULA // 4, y + TAM_CELULA // 4))
-                if n == 0 :
+                if celula.num_bombas == 0 :
                     celula.revelar_adjacente(campo, campo_tamanho_X, campo_tamanho_Y, coordenadas_bombas)
+        elif celula.bandeira:
+            pygame.draw.rect(tela, COR_BANDEIRA, ret)
         else:
             pygame.draw.rect(tela, COR_FUNDO, ret)
 
@@ -108,6 +110,14 @@ while True:
                     jogo_vencido = True
                     for c in campo:
                         c.revelada = True
+        elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 3 and not (jogo_perdido or jogo_vencido):
+            mx, my = pygame.mouse.get_pos()
+            cel = pegar_celula_por_coordenada(mx, my)
+            if cel and not cel.revelada:
+                if cel.bandeira:
+                    cel.bandeira = False
+                else:
+                    cel.bandeira = True
 
 
 

@@ -7,6 +7,9 @@ class cell:
         self.cordX = cordX
         self.cordY = cordY
         self.revelada = False
+        self.checada = False
+        self.bandeira = False
+        self.num_bombas = 0
         self.descobrir_se_bomba(cordsbombs)
     
     #descobrir se a própria celula é uma bomba ou não
@@ -27,11 +30,13 @@ class cell:
         return self.bomba
 
     def perguntar_se_bomb(self, Tamanho_X_max, campo, tamanho_y_max):
+        print(f"perguntando bombas ao redor de {[self.cordX,self.cordY]} ")
+        self.checada == True
         if self.bomba:
             print('Eu sou uma bomba! :D')
             return 0
 
-        bombas_ao_redor = 0
+        self.num_bombas = 0
         for dx in [-1, 0, 1]:
             for dy in [-1, 0, 1]:
                 if dx == 0 and dy == 0:
@@ -44,22 +49,26 @@ class cell:
                 if 0 <= nx < Tamanho_X_max and 0 <= ny < tamanho_y_max:
                     id_vizinho = nx + ny * Tamanho_X_max
                     if campo[id_vizinho].dizer_se_bomba():
-                        bombas_ao_redor += 1
+                        self.num_bombas += 1
                         print(f'Bomba Perto nas coordenadas {nx} {ny}!')
 
-        return bombas_ao_redor
+        return self.num_bombas
 
     def revelar(self, campo, lista_bombas, Tamanho_X_max, tamanho_y_max):
-        self.descobrir_se_bomba(lista_bombas)
-        print(f'checando ao redor de minhas coordenadas {self.cordX} {self.cordY}')
-        if self.bomba == True:
-            print("eu era uma bomba! você perdeu kkk")
-            return True
+        self.checada == True
+        if self.bandeira == True:
+            return
         else:
-            print(f'bombas perto {self.perguntar_se_bomb(Tamanho_X_max, campo, tamanho_y_max)}')
-            self.revelada = True
-            
-            return False
+            self.descobrir_se_bomba(lista_bombas)
+            print(f'descobrindo se eu: {self.cordX} {self.cordY} sou uma bomba')
+            if self.bomba == True:
+                print("eu era uma bomba! você perdeu kkk")
+                return True
+            else:
+                print(f'bombas perto {self.perguntar_se_bomb(Tamanho_X_max, campo, tamanho_y_max)}')
+                self.revelada = True
+
+                return False
     
     def revelar_adjacente(self, campo, Tamanho_X_max, tamanho_y_max, lista_bombas):
         for px in [-1, 0, 1]:
@@ -72,7 +81,9 @@ class cell:
 
                 if 0 <= mx < Tamanho_X_max and 0 <= my < tamanho_y_max:
                     id_vizinho = mx + my * Tamanho_X_max
-                    campo[id_vizinho].revelar(campo, lista_bombas, Tamanho_X_max, tamanho_y_max)
+                    if campo[id_vizinho].revelada == False:
+                        campo[id_vizinho].revelar(campo, lista_bombas, Tamanho_X_max, tamanho_y_max)
+                    
 
 
 
