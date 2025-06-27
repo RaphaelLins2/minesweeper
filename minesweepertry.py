@@ -107,6 +107,7 @@ qnt_bombas = int(input(f'quantas bombas você quer no campo? (qnt máx: {qnt_bom
 
 
 coordenadas_bombas = [] # iniciando uma lista para ter as coordenadas de bombas
+
 for i in range(qnt_bombas):
     X = rng.randint(1,campo_tamanho_X-1)
     Y = rng.randint(1,campo_tamanho_Y-1)

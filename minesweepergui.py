@@ -1,20 +1,26 @@
 import pygame
 import sys
+import time
 from minesweepertry import campo, campo_tamanho_X, campo_tamanho_Y, coordenadas_bombas  # importa do seu arquivo atual
 
 jogo_perdido = False
 jogo_vencido = False
 
+#começar timer
+
+mostrou_timer = False
+timer_comecou = False
+
 
 # Configurações
-TAM_CELULA = 10
+TAM_CELULA = 25
 LARGURA = campo_tamanho_X * TAM_CELULA
 ALTURA = campo_tamanho_Y * TAM_CELULA
 FPS = 60
 
 # Cores
 COR_FUNDO = (20, 20, 20)
-COR_GRADE = (50, 50, 50)
+COR_GRADE = (100, 100, 100)
 COR_REVELADO = (80, 80, 80)
 COR_BANDEIRA = (0,250,0)
 COR_TEXTO = (200, 200, 200)
@@ -97,8 +103,12 @@ while True:
             pygame.quit()
             sys.exit()
         elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1 and not (jogo_perdido or jogo_vencido):
+            if timer_comecou == False:
+                start_time = time.perf_counter()
+                timer_comecou =True
             mx, my = pygame.mouse.get_pos()
             cel = pegar_celula_por_coordenada(mx, my)
+            
             if cel and not cel.revelada:
                 perdeu = cel.revelar(campo, coordenadas_bombas, campo_tamanho_X, campo_tamanho_Y)
                 if perdeu:
@@ -123,12 +133,25 @@ while True:
 
     tela.fill(COR_FUNDO)
     desenhar_campo()
+    
     if jogo_perdido:
-        msg = fonte.render("Você perdeu! Aperte ESC para sair.", True, (255, 0, 0))
+        if mostrou_timer == False:
+            end_time = time.perf_counter()
+            execution_time = end_time - start_time
+            execution_time = str(round(execution_time, 2))
+            print(f"Programa executado em: {execution_time} segundos")
+            mostrou_timer = True
+        msg = fonte.render(f"tempo:{(execution_time)}", True, (255, 0, 0))
         tela.blit(msg, (20, 10))
     
     if jogo_vencido:
-        msg = fonte.render("Você venceu! Parabéns! ESC para sair.", True, (0, 255, 0))
+        if mostrou_timer == False:
+            end_time = time.perf_counter()
+            execution_time = end_time - start_time
+            execution_time = str(round(execution_time, 2))
+            print(f"Programa executado em: {execution_time} segundos")
+            mostrou_timer = True
+        msg = fonte.render(f"tempo: {(execution_time)}", True, (0, 255, 0))
         tela.blit(msg, (20, 10))
     
     if evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
