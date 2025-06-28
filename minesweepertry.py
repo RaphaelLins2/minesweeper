@@ -109,15 +109,15 @@ qnt_bombas = int(input(f'quantas bombas você quer no campo? (qnt máx: {qnt_bom
 coordenadas_bombas = [] # iniciando uma lista para ter as coordenadas de bombas
 
 for i in range(qnt_bombas):
-    X = rng.randint(1,campo_tamanho_X-1)
-    Y = rng.randint(1,campo_tamanho_Y-1)
+    X = rng.randint(0,campo_tamanho_X-1)
+    Y = rng.randint(0,campo_tamanho_Y-1)
     
 
     if ([X, Y]) in coordenadas_bombas:
         print(f"coordenada duplicada {X} {Y}!\nprocurando outra")
         while ([X, Y]) in coordenadas_bombas:
-            X = rng.randint(1,campo_tamanho_X-1)
-            Y = rng.randint(1,campo_tamanho_Y-1)
+            X = rng.randint(0,campo_tamanho_X-1)
+            Y = rng.randint(0,campo_tamanho_Y-1)
             print(f'testando as coordenadas {X} {Y}')
 
     print(f'criada uma bomba nas coordenadas {X} {Y}')
