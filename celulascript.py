@@ -1,3 +1,4 @@
+
 class cell:
     #iniciando as variaveis para cada celula
     def __init__(self, bomba, cordX, cordY, cordsbombs):
@@ -69,7 +70,7 @@ class cell:
                 print("eu era uma bomba! você perdeu kkk")
                 return True
             else: #caso não, ela apenas se revela e faz a contagem de bombas
-                print(f'bombas perto {self.perguntar_se_bomb(Tamanho_X_max, campo, tamanho_y_max)}')
+                self.perguntar_se_bomb(Tamanho_X_max, campo, tamanho_y_max) #após ser revelada ela descobre todas as bombas ao seu redor, que por algum motivo eu me esqueci de colocar antes
                 self.revelada = True
                 return False
     

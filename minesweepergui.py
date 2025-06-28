@@ -1,7 +1,14 @@
 import pygame
 import sys
 import time
-from campo_script import campo, campo_tamanho_X, campo_tamanho_Y, coordenadas_bombas  # importa do seu arquivo atual
+from campo_script import campo # importa do seu arquivo atual
+
+# criando o campo
+campo = campo()
+
+campo.bombas()
+campo.criador_campo()
+
 
 jogo_perdido = False
 jogo_vencido = False
@@ -14,8 +21,8 @@ timer_comecou = False
 
 # Configurações
 TAM_CELULA = 25
-LARGURA = campo_tamanho_X * TAM_CELULA
-ALTURA = campo_tamanho_Y * TAM_CELULA
+LARGURA = campo.campo_tamanho_X * TAM_CELULA
+ALTURA = campo.campo_tamanho_Y * TAM_CELULA
 FPS = 60
 
 # Cores
@@ -42,7 +49,7 @@ relogio = pygame.time.Clock()
 
 # Função para desenhar o campo
 def desenhar_campo():
-    for celula in campo:
+    for celula in campo.campo_list:
         x = celula.cordX * TAM_CELULA
         y = celula.cordY * TAM_CELULA
         ret = pygame.Rect(x, y, TAM_CELULA, TAM_CELULA)
@@ -73,7 +80,8 @@ def desenhar_campo():
                 
                     tela.blit(texto, (x + TAM_CELULA // 4, y + TAM_CELULA // 4))
                 if celula.num_bombas == 0 :
-                    celula.revelar_adjacente(campo, campo_tamanho_X, campo_tamanho_Y, coordenadas_bombas)
+                    celula.revelar_adjacente(campo.campo_list, campo.campo_tamanho_X, campo.campo_tamanho_Y, campo.coordenadas_bombas)
+                    
         elif celula.bandeira:
             pygame.draw.rect(tela, COR_BANDEIRA, ret)
         else:
@@ -85,20 +93,32 @@ def desenhar_campo():
 def pegar_celula_por_coordenada(px, py):
     x = px // TAM_CELULA
     y = py // TAM_CELULA
-    for celula in campo:
+    for celula in campo.campo_list:
         if celula.cordX == x and celula.cordY == y:
             return celula
     return None
 
 def checar_vitoria():
-    for c in campo:
-        if not c.bomba and not c.revelada:
+    for c in campo.campo_list:
+        if not c.bomba and not c.revelada and not c.bandeira:
             return False
     return True
 
 # Loop principal
 while True:
     for evento in pygame.event.get():
+        
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_r:
+                print('reiniciando o campo')
+                jogo_perdido = False
+                jogo_vencido = False
+                mostrou_timer = False
+                timer_comecou = False
+                campo.reiniciar()
+                campo.bombas()
+                campo.criador_campo()
+
         if evento.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
@@ -110,15 +130,15 @@ while True:
             cel = pegar_celula_por_coordenada(mx, my)
             
             if cel and not cel.revelada:
-                perdeu = cel.revelar(campo, coordenadas_bombas, campo_tamanho_X, campo_tamanho_Y)
+                perdeu = cel.revelar(campo.campo_list, campo.coordenadas_bombas, campo.campo_tamanho_X, campo.campo_tamanho_Y)
                 if perdeu:
                     jogo_perdido = True
-                    for c in campo:
+                    for c in campo.campo_list:
                         if c.bomba:
                             c.revelada = True
                 elif checar_vitoria():
                     jogo_vencido = True
-                    for c in campo:
+                    for c in campo.campo_list: #mostra todas as bombas após vencer
                         c.revelada = True
         elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 3 and not (jogo_perdido or jogo_vencido):
             mx, my = pygame.mouse.get_pos()
@@ -133,7 +153,10 @@ while True:
 
     tela.fill(COR_FUNDO)
     desenhar_campo()
-    
+    if not jogo_perdido and not jogo_vencido and checar_vitoria():
+        jogo_vencido = True
+        for c in campo.campo_list:
+            c.revelada = True
     if jogo_perdido:
         if mostrou_timer == False:
             end_time = time.perf_counter()
