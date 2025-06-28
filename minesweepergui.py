@@ -1,7 +1,7 @@
 import pygame
 import sys
 import time
-from minesweepertry import campo, campo_tamanho_X, campo_tamanho_Y, coordenadas_bombas  # importa do seu arquivo atual
+from campo_script import campo, campo_tamanho_X, campo_tamanho_Y, coordenadas_bombas  # importa do seu arquivo atual
 
 jogo_perdido = False
 jogo_vencido = False
