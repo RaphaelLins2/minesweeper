@@ -43,10 +43,13 @@ class campo:
             for xcamp in range(self.campo_tamanho_X):
                 self.campo_list.append(cell(False,xcamp,ycamp,self.coordenadas_bombas))
     
-    def gerar_campo(self):
-        self.bombas()
-        self.criador_campo()
+    
     
     def reiniciar(self):
         self.coordenadas_bombas = []
         self.campo_list = []
+
+    def gerar_campo(self):
+        self.reiniciar()
+        self.bombas()
+        self.criador_campo()
