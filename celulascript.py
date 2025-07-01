@@ -58,21 +58,73 @@ class cell:
                         print(f'Bomba Perto nas coordenadas {nx} {ny}!')
         #retorna o número de bombas totais
         return self.num_bombas
+    def old():
+        '''def revelar(self, campo, lista_bombas, Tamanho_X_max, tamanho_y_max):
+            self.checada = True #nao remover isto agora pois em alguma parte do código ele é usado para decidir a vitória
+            if self.bandeira == True: #se for uma bandeira não tem como revelar
+                return
+            else:
+                self.descobrir_se_bomba(lista_bombas) #descobre se é uma bomba
+                print(f'descobrindo se eu: {self.cordX} {self.cordY} sou uma bomba')
+                if self.bomba == True: #caso seja o player perde
+                    print("eu era uma bomba! você perdeu kkk")
+                    return True
+                else: #caso não, ela apenas se revela e faz a contagem de bombas
+                    self.perguntar_se_bomb(Tamanho_X_max, campo, tamanho_y_max) #após ser revelada ela descobre todas as bombas ao seu redor, que por algum motivo eu me esqueci de colocar antes
+                    if self.num_bombas == 0:
+                        # isso seria o mesmo que chamar revelar adjacente() porém o python é moggado e nao deixa chamar a função antes de ser estabelecidade
+                        print("isso é um zero, vamos fazer floodfill")
+                        for px in [-1, 0, 1]:
+                            for py in [-1, 0, 1]:
+                                if px == 0 and py == 0:
+                                    continue
+                                
+                                mx = self.cordX + px
+                                my = self.cordY + py
 
+                                if 0 <= mx < Tamanho_X_max and 0 <= my < tamanho_y_max:
+                                    id_vizinho = mx + my * Tamanho_X_max
+                                    if campo[id_vizinho].revelada == False:
+                                        print(f"revelando{id_vizinho}")
+                                        campo[id_vizinho].revelar(campo, lista_bombas, Tamanho_X_max, tamanho_y_max)
+                    self.revelada = True
+                    return False'''
+        pass
+    
     def revelar(self, campo, lista_bombas, Tamanho_X_max, tamanho_y_max):
-        self.checada == True #nao remover isto agora pois em alguma parte do código ele é usado para decidir a vitória
-        if self.bandeira == True: #se for uma bandeira não tem como revelar
+        if self.revelada or self.bandeira:
             return
-        else:
-            self.descobrir_se_bomba(lista_bombas) #descobre se é uma bomba
-            print(f'descobrindo se eu: {self.cordX} {self.cordY} sou uma bomba')
-            if self.bomba == True: #caso seja o player perde
-                print("eu era uma bomba! você perdeu kkk")
-                return True
-            else: #caso não, ela apenas se revela e faz a contagem de bombas
-                self.perguntar_se_bomb(Tamanho_X_max, campo, tamanho_y_max) #após ser revelada ela descobre todas as bombas ao seu redor, que por algum motivo eu me esqueci de colocar antes
-                self.revelada = True
-                return False
+
+        self.checada = True  # Corrigido de == para = (atribuição)
+        self.revelada = True
+
+        self.descobrir_se_bomba(lista_bombas)
+        print(f'descobrindo se eu: {self.cordX} {self.cordY} sou uma bomba')
+
+        if self.bomba:
+            print("eu era uma bomba! você perdeu kkk")
+            return True
+
+        self.perguntar_se_bomb(Tamanho_X_max, campo, tamanho_y_max)
+
+        if self.num_bombas == 0:
+            print("isso é um zero, vamos fazer floodfill")
+            for dx in [-1, 0, 1]:
+                for dy in [-1, 0, 1]:
+                    if dx == 0 and dy == 0:
+                        continue
+                    
+                    nx = self.cordX + dx
+                    ny = self.cordY + dy
+
+                    if 0 <= nx < Tamanho_X_max and 0 <= ny < tamanho_y_max:
+                        id_vizinho = nx + ny * Tamanho_X_max
+                        vizinho = campo[id_vizinho]
+                        if not vizinho.revelada:
+                            vizinho.revelar(campo, lista_bombas, Tamanho_X_max, tamanho_y_max)
+
+        return False
+
     
     def revelar_adjacente(self, campo, Tamanho_X_max, tamanho_y_max, lista_bombas):
         #similar ao código de contagem de bombas, porém ele checa as celulas ao redor e revela elas

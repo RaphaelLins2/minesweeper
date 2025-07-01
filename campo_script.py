@@ -44,7 +44,6 @@ class campo:
                 self.campo_list.append(cell(False,xcamp,ycamp,self.coordenadas_bombas))
     
     
-    
     def reiniciar(self):
         self.coordenadas_bombas = []
         self.campo_list = []

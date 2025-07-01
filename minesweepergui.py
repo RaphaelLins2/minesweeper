@@ -79,8 +79,7 @@ def desenhar_campo():
                             texto = fonte.render(str(celula.num_bombas), True, COR_T8)
                 
                     tela.blit(texto, (x + TAM_CELULA // 4, y + TAM_CELULA // 4))
-                if celula.num_bombas == 0 :
-                    celula.revelar_adjacente(campo.campo_list, campo.campo_tamanho_X, campo.campo_tamanho_Y, campo.coordenadas_bombas)
+                
                     
         elif celula.bandeira:
             pygame.draw.rect(tela, COR_BANDEIRA, ret)
@@ -152,6 +151,7 @@ while True:
 
 
     tela.fill(COR_FUNDO)
+
     desenhar_campo()
     if not jogo_perdido and not jogo_vencido and checar_vitoria():
         jogo_vencido = True
