@@ -56,8 +56,9 @@ def main():
                 try:
                     campo_remoto = pickle.loads(s.recv(65536))
                 except Exception as e:
+                    
                     print("Erro ao receber dados do servidor:", e)
-                    break
+                    
         except:
             print("Erro ao receber dados do servidor.")
             break
