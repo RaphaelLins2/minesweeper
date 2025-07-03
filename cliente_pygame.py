@@ -52,13 +52,24 @@ def main():
         # Recebe o estado do campo
         try:
             ready = select.select([s], [], [], 0.01)  # timeout curtíssimo
+            maxtries = 3
+            tries = 0
             if ready[0]:
                 try:
                     campo_remoto = pickle.loads(s.recv(65536))
+                    print(f"Campo recebido com {len(campo_remoto)} células.")
+                    if 0 < tries:
+                        while tries >= 0:
+                            tries-=1
+                            print('recebemos o campo, diminuindo tries')
                 except Exception as e:
-                    
-                    print("Erro ao receber dados do servidor:", e)
-                    
+                    if tries <= maxtries:
+                        print("Erro ao desserializar o campo, solicitando retransmissão:", e)
+                        s.sendall(pickle.dumps(("retransmitir", 0, 0)))
+                        tries+=1
+                    else:
+                        print('limite de tries atinjido!')
+
         except:
             print("Erro ao receber dados do servidor.")
             break

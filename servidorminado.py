@@ -7,8 +7,19 @@ from cronometro_script import Cronometro
 
 # 1 - setando o servidor para escutar socket
 
+def obter_ip_local():
+    try:
+        # Conecta a um servidor externo (sem realmente enviar dados) para descobrir o IP local
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))  # Usa o DNS do Google como destino
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception as e:
+        return f"Erro ao obter IP: {e}"
+
 #primeiro pegamos o ip da máquina para que as outras se conectem
-host = socket.gethostbyname(socket.gethostname()) 
+host = obter_ip_local()
 #selecionando uma porta para rodar o serviço
 porta = 65432
 #criando uma lista de clientes ativo
@@ -131,7 +142,14 @@ def tratar_cliente(conexao, endereco):
                 jogo_perdido = False
                 jogo_vencido = False
                 timer_comecou = False
-            
+
+            elif tipo == "retransmitir":
+                lista_serializada = pickle.dumps(campo_jogo.campo_list)
+                conexao.sendall(lista_serializada)
+                print(f"Reenviado campo para {endereco} após pedido de retransmissão.")
+            # por algum motivo o retransmetir pode causar um loop infinito que deixa o jogo injogvél
+            # possivelmente deve haver com o fato de que o retransmitir atualiza todos os clientes ao mesmo tempo
+            # ver isso de imediato 
 
             
             
